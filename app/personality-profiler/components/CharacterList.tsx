@@ -10,66 +10,80 @@ interface CharacterListProps {
 
 export default function CharacterList({ sessions, onSelect, onCreate, onDelete }: CharacterListProps) {
     return (
-        <div className="w-full max-w-4xl mx-auto p-6">
-            <div className="flex justify-between items-center mb-8">
+        <div className="w-full max-w-6xl mx-auto py-12 px-4 font-mono">
+            <header className="mb-12 border-b border-white/20 pb-4 flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                        Memory Archives
+                    <h1 className="text-4xl font-light text-white tracking-tighter mb-1">
+                        ANAMNESIS
                     </h1>
-                    <p className="text-gray-400 mt-2">stored_personality_profiles</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-widest">
+                        <span>/// MEMORY_INDEX</span>
+                        <span>[ STATUS: ONLINE ]</span>
+                    </div>
                 </div>
                 <button
                     onClick={onCreate}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/25 flex items-center gap-2"
+                    className="group flex items-center gap-3 px-6 py-3 border border-white/20 hover:bg-white hover:text-black transition-colors duration-200"
                 >
-                    <span className="text-xl">+</span>
-                    New Profile
+                    <span className="text-xs tracking-widest">[ INITIALIZE_NEW_PROTOCOL ]</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">_</span>
                 </button>
-            </div>
+            </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Grid Layout - simulating a table/grid with borders */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-white/10">
                 {sessions.length === 0 ? (
-                    <div className="col-span-full text-center py-20 bg-white/5 rounded-2xl border border-white/10 border-dashed">
-                        <p className="text-gray-500">No profiles found in archive.</p>
-                        <p className="text-gray-600 text-sm mt-2">Create a new one to get started.</p>
+                    <div className="col-span-full py-32 text-center border-b border-r border-white/10">
+                        <p className="text-gray-600 text-sm tracking-widest">NO_ARCHIVES_FOUND</p>
+                        <p className="text-gray-700 text-xs mt-2">// Execute initialization to begin</p>
                     </div>
                 ) : (
-                    sessions.map((session) => (
+                    sessions.map((session, idx) => (
                         <div
                             key={session.id}
                             onClick={() => onSelect(session.id)}
-                            className="group relative bg-[#0A0A0A] border border-white/10 rounded-xl p-6 hover:border-blue-500/50 hover:bg-[#0f0f15] transition-all duration-300 cursor-pointer overflow-hidden"
+                            className="group relative h-64 border-b border-r border-white/10 p-6 cursor-pointer hover:bg-[#0A0A0A] transition-colors overflow-hidden"
                         >
-                            {/* Card Decoration */}
-                            <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                            {/* Hover Effect: Simple Glow from corner */}
+                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-[10px] text-blue-400 font-light tracking-widest">ACTIVE_NODE</span>
                             </div>
 
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-xl font-bold text-gray-400 group-hover:text-blue-400 transition-colors">
-                                    {session.name.charAt(0)}
+                            {/* Header: ID & Initial */}
+                            <div className="flex justify-between items-start mb-6 opacity-60 group-hover:opacity-100 transition-opacity">
+                                <div className="text-2xl font-light text-gray-300 group-hover:text-white">
+                                    {session.name.charAt(0).toUpperCase()}
                                 </div>
+                                <div className="text-[10px] text-gray-600 tracking-widest">
+                                    ID: {session.id.slice(0, 4).toUpperCase()}
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="relative z-10">
+                                <h3 className="text-lg text-gray-200 font-light mb-2 truncate">
+                                    {session.name}
+                                </h3>
+                                <div className="h-12 overflow-hidden relative">
+                                    <p className="text-xs text-gray-500 leading-relaxed font-light">
+                                        {session.roughProfile || "NO_DATA_AVAILABLE"}
+                                    </p>
+                                    {/* Gradient fade for text truncation */}
+                                    <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-[#050505] to-transparent" />
+                                </div>
+                            </div>
+
+                            {/* Footer: Date & Delete */}
+                            <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end border-t border-dashed border-gray-800 pt-4 mt-4">
+                                <span className="text-[10px] text-gray-600">
+                                    UPDATED: {new Date(session.updatedAt).toLocaleDateString().replace(/\//g, '.')}
+                                </span>
                                 <button
                                     onClick={(e) => onDelete(session.id, e)}
-                                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors z-10"
-                                    title="Delete Profile"
+                                    className="text-[10px] text-red-900 hover:text-red-500 hover:bg-red-950/30 px-2 py-1 transition-colors uppercase tracking-wider"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                                    </svg>
+                                    [ PURGE ]
                                 </button>
-                            </div>
-
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-200 transition-colors line-clamp-1">
-                                {session.name}
-                            </h3>
-                            <p className="text-sm text-gray-400 line-clamp-2 h-10 mb-4">
-                                {session.roughProfile || "No description provided."}
-                            </p>
-
-                            <div className="flex items-center justify-between text-xs text-gray-600 pt-4 border-t border-white/5">
-                                <span>Last Updated</span>
-                                <span className="font-mono">{new Date(session.updatedAt).toLocaleDateString()}</span>
                             </div>
                         </div>
                     ))

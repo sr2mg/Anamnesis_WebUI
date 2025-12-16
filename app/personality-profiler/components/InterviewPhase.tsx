@@ -93,83 +93,87 @@ export default function InterviewPhase({
   };
 
   return (
-    <div className="flex flex-col h-[80vh] w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden animate-in fade-in duration-700">
+    <div className="flex flex-col h-[85vh] w-full max-w-5xl mx-auto border-l border-r border-white/10 relative">
 
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5">
-        <div>
-          <h2 className="text-lg font-light text-white tracking-wide">Profiling: <span className="font-semibold">{characterName}</span></h2>
-          <span className="text-xs text-green-400 font-mono">● LIVE CONNECTION</span>
+      {/* Header telemetry */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#050505] z-10 sticky top-0">
+        <div className="flex gap-4 items-center">
+          <div className="w-2 h-2 bg-green-900 rounded-full animate-pulse shadow-[0_0_10px_#00ff00]" />
+          <div className="text-[10px] text-gray-500 font-mono tracking-widest">
+            CONNECTION: STABLE // LATENCY: 24ms
+          </div>
         </div>
         <button
           onClick={onFnish}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-md transition-colors shadow-lg shadow-indigo-500/20"
+          className="group relative px-4 py-2 border border-red-900/50 hover:bg-red-900/10 transition-colors"
         >
-          Generate Profile
+          <span className="text-[10px] text-red-500 font-bold tracking-widest group-hover:text-red-400 animate-pulse">
+            [ TERMINATE & GENERATE ]
+          </span>
         </button>
       </div>
 
-      {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      {/* Chat Area - Script Style */}
+      <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent font-mono">
         {messages.map((msg, i) => (
-          // Hide the very first system-init message if it matches our template
           (i === 0 && msg.content.includes('こんにちは、キャラクターのプロフィールを作りたいです。')) ? null : (
             <div
               key={i}
-              className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className="flex flex-col gap-2 animate-in fade-in slide-in-from-left-2 duration-500"
             >
-              <div
-                className={`max-w-[80%] rounded-2xl px-6 py-4 text-sm leading-relaxed ${msg.role === 'user'
-                  ? 'bg-blue-600 text-white rounded-br-none shadow-lg'
-                  : 'bg-white/10 text-white/90 rounded-bl-none border border-white/5'
-                  }`}
-              >
+              <span className="text-[10px] text-gray-600 tracking-widest uppercase">
+                {msg.role === 'user' ? `> SUBJECT: ${characterName.toUpperCase()}` : `> SYSTEM: ANALYST_AI`}
+              </span>
+
+              <div className={`pl-4 border-l-2 ${msg.role === 'user' ? 'border-gray-700' : 'border-white/20'}`}>
+                <p className={`text-sm leading-loose whitespace-pre-wrap ${msg.role === 'user' ? 'text-gray-400' : 'text-gray-200'}`}>
+                  {msg.content}
+                </p>
+
                 {msg.analysis && (
-                  <details className="mb-3 text-xs text-white/40 border-b border-white/5 pb-2">
-                    <summary className="cursor-pointer hover:text-white/60 transition-colors uppercase tracking-wider font-mono select-none">
-                      Analytic Thought Process
+                  <details className="mt-4 group">
+                    <summary className="text-[10px] text-gray-700 cursor-pointer hover:text-gray-500 uppercase tracking-widest list-none flex items-center gap-2 select-none">
+                      <span className="opacity-50">::</span>
+                      INTERNAL_PROCESS
+                      <span className="opacity-0 group-open:opacity-100 transition-opacity text-blue-900">[EXPANDED]</span>
                     </summary>
-                    <div className="mt-2 p-3 bg-black/20 rounded-lg font-mono leading-relaxed whitespace-pre-wrap">
+                    <div className="mt-2 p-4 bg-[#0A0A0A] border border-white/5 text-[10px] text-gray-500 leading-relaxed font-mono whitespace-pre-wrap">
                       {msg.analysis}
                     </div>
                   </details>
                 )}
-                {msg.content}
               </div>
             </div>
           )
         ))}
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-white/5 rounded-2xl px-6 py-4 rounded-bl-none flex items-center space-x-2">
-              <div className="w-2 h-2 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-2 h-2 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-2 h-2 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="flex flex-col gap-2 opacity-50">
+            <span className="text-[10px] text-gray-600 tracking-widest uppercase mb-1">&gt; SYSTEM</span>
+            <div className="pl-4 border-l-2 border-white/10">
+              <p className="text-xs text-gray-600 animate-pulse">PROCESSING_INPUT_STREAM...</p>
             </div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="p-4 bg-white/5 border-t border-white/5">
-        <div className="relative flex items-end gap-2">
+      {/* Input Area - CLI Style */}
+      <div className="p-0 border-t border-white/10 bg-[#050505]">
+        <div className="relative flex items-center">
+          <div className="px-4 text-gray-600 font-mono text-lg select-none">{'>'}</div>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all resize-none min-h-[50px] max-h-[150px]"
-            placeholder="Type your response..."
-            rows={1}
+            className="w-full bg-transparent border-none py-6 text-white placeholder-gray-800 focus:ring-0 resize-none font-mono text-sm leading-relaxed h-20"
+            placeholder="ENTER_RESPONSE..."
           />
           <button
             onClick={() => handleSendMessage(input)}
             disabled={!input.trim() || isLoading}
-            className="p-3 bg-white text-black rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-6 p-2 text-gray-600 hover:text-white transition-colors disabled:opacity-20"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-            </svg>
+            <span className="text-xs tracking-widest">[ SUBMIT ]</span>
           </button>
         </div>
       </div>

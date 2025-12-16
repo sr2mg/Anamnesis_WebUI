@@ -169,13 +169,10 @@ export default function DeepProfilerPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] min-w-full flex flex-col p-4 selection:bg-blue-500/30">
+    <main className="min-h-screen bg-[#050505] min-w-full flex flex-col p-4 selection:bg-white/20 font-mono text-gray-300">
 
-      {/* Background Ambience */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/10 blur-[120px] rounded-full mix-blend-screen" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/10 blur-[120px] rounded-full mix-blend-screen" />
-      </div>
+      {/* Grid System Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:40px_40px]" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col">
         {view === 'LIST' ? (
@@ -188,24 +185,25 @@ export default function DeepProfilerPage() {
         ) : (
           <div className="w-full h-full flex flex-col">
             {/* Header / Nav */}
-            <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="mb-8 flex items-end justify-between border-b border-white/20 pb-2 bg-[#050505]/80 backdrop-blur-sm sticky top-0 z-50 pt-4">
               <button
                 onClick={handleBackToList}
-                className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors"
+                className="group flex items-center gap-3 text-sm text-gray-500 hover:text-white transition-colors"
                 title="Back to List"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                </svg>
-                <span>Back to Archives</span>
+                <span className="text-xs group-hover:text-red-500 transition-colors">[ESC]</span>
+                <span className="uppercase tracking-widest group-hover:underline decoration-1 underline-offset-4">Back to Index</span>
               </button>
-              <div className="text-sm text-gray-600 font-mono">
-                SESSION ID: {currentId?.slice(0, 8)}...
+              <div className="flex flex-col items-end">
+                <div className="text-[10px] text-gray-600 uppercase tracking-[0.2em] mb-1">Session ID</div>
+                <div className="text-xs text-white/80 font-mono border border-white/10 px-2 py-1">
+                  {currentId?.slice(0, 8).toUpperCase()}<span className="animate-pulse">_</span>
+                </div>
               </div>
             </div>
 
             {/* Content phases */}
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex flex-col">
               {step === 'SETUP' && (
                 <SetupPhase
                   onComplete={handleSetupComplete}
