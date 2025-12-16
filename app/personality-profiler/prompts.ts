@@ -50,6 +50,7 @@ ${anamnesis_docs}
 }
 Markdownのコードブロックは使用せず、生のJSONのみを出力してください。
 もしインタビューを終了できる程度までデータを集めた場合は、is_finishedをtrueに設定してください。
+終了時は特に結論を出さずanalysisに記述したうえで、replyは「診断が終わったのでGenerateボタンを押してください」と、ボタンを押下することを勧めてください
         `;
 
 export const GENERATOR_SYSTEM_PROMPT = (anamnesis_docs: string) => `

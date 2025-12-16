@@ -16,7 +16,14 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 const responseSchema = z.object({
   analysis: z.string().describe("Internal psychological analysis of the user's input, hypothesis testing, and strategy formulation."),
   reply: z.string().describe("The direct response to the user, acting as the interviewer."),
-  is_finished: z.boolean().describe("Set to true when the interview is finished.")
+  is_finished: z.union([z.boolean(), z.string()])
+    .transform((val) => {
+      if (typeof val === 'string') {
+        return val.trim().toLowerCase() === 'true';
+      }
+      return val;
+    })
+    .describe("Set to true when the interview is finished.")
 });
 
 export async function continueInterview(
@@ -49,7 +56,7 @@ export async function continueInterview(
       config: {
         systemInstruction: INTERVIEWER_SYSTEM_PROMPT(anamnesis_doc),
         responseMimeType: "application/json",
-        responseJsonSchema: zodToJsonSchema(responseSchema),
+        responseJsonSchema: zodToJsonSchema(responseSchema as any),
       },
       contents: contents,
     });
