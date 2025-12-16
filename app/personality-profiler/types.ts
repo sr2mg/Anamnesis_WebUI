@@ -9,6 +9,7 @@ export interface SessionMetadata {
   name: string;
   roughProfile: string;
   updatedAt: number;
+  finalProfile?: string;
 }
 
 export interface SavedState extends SessionMetadata {

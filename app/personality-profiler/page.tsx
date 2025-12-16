@@ -23,6 +23,8 @@ export default function DeepProfilerPage() {
   const [roughProfile, setRoughProfile] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const [finalProfile, setFinalProfile] = useState<string | undefined>(undefined);
+
   // Load Index on Mount
   useEffect(() => {
     refreshSessionList();
@@ -50,7 +52,8 @@ export default function DeepProfilerPage() {
           updatedAt: Date.now(),
           step,
           apiKey,
-          messages
+          messages,
+          finalProfile
         };
 
         // Save individual session
@@ -61,7 +64,8 @@ export default function DeepProfilerPage() {
           id: currentId,
           name: state.name,
           roughProfile: state.roughProfile,
-          updatedAt: state.updatedAt
+          updatedAt: state.updatedAt,
+          finalProfile: state.finalProfile
         };
 
         // Get fresh index to avoid race conditions (though usually sync in React effects)
@@ -85,7 +89,7 @@ export default function DeepProfilerPage() {
       const debounce = setTimeout(saveToStorage, 1000);
       return () => clearTimeout(debounce);
     }
-  }, [view, currentId, step, apiKey, characterName, roughProfile, messages]);
+  }, [view, currentId, step, apiKey, characterName, roughProfile, messages, finalProfile]);
 
   // Actions
   const handleCreateNew = () => {
@@ -101,6 +105,7 @@ export default function DeepProfilerPage() {
     setCharacterName('');
     setRoughProfile('');
     setMessages([]);
+    setFinalProfile(undefined);
     setView('SESSION');
   };
 
@@ -115,6 +120,7 @@ export default function DeepProfilerPage() {
         setCharacterName(data.name); // Mapping name back to characterName
         setRoughProfile(data.roughProfile);
         setMessages(data.messages);
+        setFinalProfile(data.finalProfile);
         setView('SESSION');
       } else {
         alert('Session data missing!');
@@ -165,6 +171,7 @@ export default function DeepProfilerPage() {
       // Usually reset means start over.
       setCharacterName('');
       setRoughProfile('');
+      setFinalProfile(undefined);
     }
   };
 
@@ -227,6 +234,7 @@ export default function DeepProfilerPage() {
                   apiKey={apiKey}
                   history={messages}
                   onReset={handleReset}
+                  onProfileGenerated={setFinalProfile}
                 />
               )}
             </div>

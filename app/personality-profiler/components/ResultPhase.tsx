@@ -6,9 +6,10 @@ interface ResultPhaseProps {
   apiKey: string;
   history: Message[];
   onReset: () => void;
+  onProfileGenerated?: (markdown: string) => void;
 }
 
-export default function ResultPhase({ apiKey, history, onReset }: ResultPhaseProps) {
+export default function ResultPhase({ apiKey, history, onReset, onProfileGenerated }: ResultPhaseProps) {
   const [markdown, setMarkdown] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +25,7 @@ export default function ResultPhase({ apiKey, history, onReset }: ResultPhasePro
         if (mounted) {
           setMarkdown(cached);
           setLoading(false);
+          onProfileGenerated?.(cached);
         }
         return;
       }
@@ -38,6 +40,7 @@ export default function ResultPhase({ apiKey, history, onReset }: ResultPhasePro
           setMarkdown(result);
           localStorage.setItem('anamnesis_last_profile', result); // Save to cache
           setLoading(false);
+          onProfileGenerated?.(result);
         }
       } catch (error) {
         console.error(error);
