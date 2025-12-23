@@ -13,6 +13,7 @@ export default function CharacterList({ sessions, onSelect, onCreate, onDelete }
         <div className="w-full max-w-6xl mx-auto py-12 px-4 font-mono">
             <header className="mb-12 border-b border-white/20 pb-4 flex justify-between items-end">
                 <div>
+                    <a href="/" className="text-[10px] text-gray-500 hover:text-white transition-colors mb-2 block">← ROOT</a>
                     <h1 className="text-4xl font-light text-white tracking-tighter mb-1">
                         ANAMNESIS
                     </h1>
