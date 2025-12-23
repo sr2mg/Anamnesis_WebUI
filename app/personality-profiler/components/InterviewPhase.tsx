@@ -38,7 +38,7 @@ export default function InterviewPhase({
   useEffect(() => {
     if (messages.length === 0 && !hasStarted.current) {
       hasStarted.current = true;
-      handleSendMessage(`こんにちは、キャラクター名は${characterName}です。${roughProfile ? `キャラクターについての現状の概要は下記です。\n「${roughProfile}」` : ''}`);
+      handleSendMessage(`今から始めます。\nキャラクター名：${characterName}\n${roughProfile ? `キャラクターについての現状の概要は下記です。\n${roughProfile}` : ''}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -53,7 +53,7 @@ export default function InterviewPhase({
     // Let's hide the very first setup prompt from the UI to make it feel like the AI starts.
 
     let newMessages = [...messages];
-    if (messages.length > 0 || content !== `こんにちは。キャラクター名は${characterName}です。${roughProfile ? `キャラクターについての現状の概要は下記です。\n「${roughProfile}」` : ''}`) {
+    if (messages.length > 0 || content !== `今から始めます。\nキャラクター名：${characterName}\n${roughProfile ? `キャラクターについての現状の概要は下記です。\n${roughProfile}` : ''}`) {
       newMessages.push(userMsg);
     }
 
