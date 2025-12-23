@@ -7,40 +7,53 @@ interface ResultPhaseProps {
   history: Message[];
   onReset: () => void;
   onProfileGenerated?: (markdown: string) => void;
+  initialProfile?: string;
 }
 
-export default function ResultPhase({ apiKey, history, onReset, onProfileGenerated }: ResultPhaseProps) {
-  const [markdown, setMarkdown] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+export default function ResultPhase({ apiKey, history, onReset, onProfileGenerated, initialProfile }: ResultPhaseProps) {
+  const [markdown, setMarkdown] = useState<string>(initialProfile || '');
+  const [loading, setLoading] = useState(!initialProfile);
 
-  const hasFetched = React.useRef(false);
+  const runningPromise = React.useRef<Promise<string> | null>(null);
+
+  const latestProps = React.useRef({ apiKey, history, onProfileGenerated });
+
+  // Keep refs updated
+  useEffect(() => {
+    latestProps.current = { apiKey, history, onProfileGenerated };
+  }, [apiKey, history, onProfileGenerated]);
+
+  // Handle initialProfile updates from parent
+  useEffect(() => {
+    if (initialProfile) {
+      setMarkdown(initialProfile);
+      setLoading(false);
+    }
+  }, [initialProfile]);
 
   useEffect(() => {
+    // If we already have a profile passed down, don't fetch.
+    if (initialProfile) {
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
 
     async function fetchProfile() {
-      // 1. Check cache first
-      const cached = localStorage.getItem('anamnesis_last_profile');
-      if (cached) {
-        if (mounted) {
-          setMarkdown(cached);
-          setLoading(false);
-          onProfileGenerated?.(cached);
-        }
-        return;
+      // Use a ref to store the promise so it persists across Strict Mode remounts
+      if (!runningPromise.current) {
+        const { apiKey: key, history: hist } = latestProps.current;
+        runningPromise.current = generateFinalProfile(key, hist);
       }
 
-      // 2. Prevent double fetching in Strict Mode
-      if (hasFetched.current) return;
-      hasFetched.current = true;
-
       try {
-        const result = await generateFinalProfile(apiKey, history);
+        const result = await runningPromise.current;
         if (mounted) {
+          const { onProfileGenerated: onGen } = latestProps.current;
           setMarkdown(result);
-          localStorage.setItem('anamnesis_last_profile', result); // Save to cache
           setLoading(false);
-          onProfileGenerated?.(result);
+          onGen?.(result);
         }
       } catch (error) {
         console.error(error);
@@ -53,10 +66,9 @@ export default function ResultPhase({ apiKey, history, onReset, onProfileGenerat
 
     fetchProfile();
     return () => { mounted = false; };
-  }, [apiKey, history]);
+  }, []); // Run once on mount
 
   const handleReset = () => {
-    localStorage.removeItem('anamnesis_last_profile');
     onReset();
   };
 
