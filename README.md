@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anamnesis (アナムネシス)
 
-## Getting Started
+## 概要
 
-First, run the development server:
+Anamnesisは、深層心理学（ユング/ビービ・モデル、マカダムスのナラティブ論、シュワルツの価値観理論、スキーマ療法）に基づいたAI人格プロファイリングおよび対話システムです。
+
+ユーザーへのインタビューを通じて、キャラクターの「深層人格アーキテクチャ」を構築し、生成されたキャラクターと対話（チャット）することができます。
+
+## 主な機能
+
+### 1. Personality Profiler (人格プロファイラー)
+- **深層インタビュー**: ユーザーに対して動的に質問を行い、キャラクターの認知機能、中核的な傷、価値観などを掘り下げます。
+- **アーキテクチャ生成**: インタビュー結果に基づき、詳細な心理プロファイル（マークダウン形式）を生成します。
+- **セッション管理**: プロファイル作成セッションを保存・再開できます。
+
+### 2. Talk (キャラクター対話)
+- **1対1チャット**: 生成されたプロファイルを持つキャラクターとチャットができます。キャラクターは自身の心理モデル（スキーマ、モード）に基づいて応答します。
+- **内部思考の可視化**: AIが応答を生成する際の「心理学的分析プロセス」を覗き見ることができます。
+
+### 3. Multi-Talk (グループ対話)
+- **多人数チャット**: 複数のキャラクターを選択し、特定のシチュエーションやテーマについて議論させることができます。
+
+## 技術スタック
+
+- **フレームワーク**: Next.js 15 (App Router)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS
+- **AI**: Google Gemini API (gemini-2.5-pro)
+- **バリデーション**: Zod
+
+## セットアップ
+
+### 必要条件
+- Node.js 18以上
+- Google Gemini API キー
+
+### インストール
+
+```bash
+# 依存関係のインストール
+npm install
+```
+
+### 環境変数の設定
+
+ルートディレクトリに `.env` ファイルを作成し、以下の変数を設定してください。
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+```
+※ APIキーはブラウザのLocalStorageに保存して使用することも可能です（UIから入力可）。
+
+### 起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
