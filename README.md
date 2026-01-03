@@ -57,3 +57,23 @@ npm run dev
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
+
+## Dockerで起動
+
+Dockerで動かすには、最初に `.env` を用意します。中身は通常の起動と同じで、`GOOGLE_API_KEY` を入れてください。次に、Dockerでビルドして起動します。
+
+```bash
+# ビルド
+docker build -t anamnesis-webui .
+
+# 起動
+docker run --env-file .env -p 3000:3000 anamnesis-webui
+```
+
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
+
+docker-compose を使う場合は次の2行で動きます。
+
+```bash
+docker compose up --build
+```
