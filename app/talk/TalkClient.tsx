@@ -26,6 +26,7 @@ export default function TalkClient({ envApiKey }: TalkClientProps) {
     const [characterName, setCharacterName] = useState<string>('');
 
     const scrollRef = useRef<HTMLDivElement>(null);
+    const isComposingRef = useRef(false);
 
     useEffect(() => {
         // Load sessions that have a final profile
@@ -87,6 +88,13 @@ export default function TalkClient({ envApiKey }: TalkClientProps) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter') return;
+        if (isComposingRef.current || e.nativeEvent.isComposing) return;
+        e.preventDefault();
+        handleSend();
     };
 
     if (sessions.length === 0) {
@@ -182,7 +190,9 @@ export default function TalkClient({ envApiKey }: TalkClientProps) {
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                                    onCompositionStart={() => { isComposingRef.current = true; }}
+                                    onCompositionEnd={() => { isComposingRef.current = false; }}
+                                    onKeyDown={handleInputKeyDown}
                                     placeholder="Type your message..."
                                     className="flex-1 bg-transparent border-b border-white/20 py-2 focus:border-white outline-none transition-colors"
                                 />
