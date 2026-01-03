@@ -23,6 +23,7 @@ export default function InterviewPhase({
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isComposingRef = useRef(false);
 
   const hasStarted = useRef(false);
 
@@ -85,8 +86,9 @@ export default function InterviewPhase({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+      if (isComposingRef.current || e.nativeEvent.isComposing) return;
       e.preventDefault();
       handleSendMessage(input);
     }
@@ -165,6 +167,8 @@ export default function InterviewPhase({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
+            onCompositionStart={() => { isComposingRef.current = true; }}
+            onCompositionEnd={() => { isComposingRef.current = false; }}
             className="w-full bg-transparent border-none py-6 text-white placeholder-gray-800 focus:ring-0 resize-none font-mono text-sm leading-relaxed h-20"
             placeholder="ENTER_RESPONSE..."
           />
